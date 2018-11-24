@@ -3,208 +3,121 @@ using System.Collections.Generic;
 using UnityEngine;
 using Prime31;
 
-public class controlPlayer : MonoBehaviour {
+public class controlPlayer : MonoBehaviour
+{
 
-	public float moveSpeed = 8f;
-	public float gravity = -25f;
-	public float groundDamping = 20f; // how fast do we change direction? higher means faster
-	public float inAirDamping = 5f;
-	public float jumpHeight = 3f;
-	public float dashCharge = 100f;
+    public float moveSpeed = 8f;
+    public float gravity = -25f;
+    public float groundDamping = 20f; // how fast do we change direction? higher means faster
+    public float inAirDamping = 5f;
+    public float jumpHeight = 3f;
+    public float dashCharge = 100f;
     public float dashSpeed = 8f;
     public float dashTime = 3f;
-    public float currDashTime;
+    //public float currDashTime;
 
-	public bool active = true;
-	public bool locked = false;
-	public bool firing = false;
-	bool facingLeft = false;
-	bool invuln = false;
+    public bool active = true;
+    public bool locked = false;
+    public bool firing = false;
+    bool invuln = false;
 
     [SerializeField]
     GameObject afterImage;
 
-	[HideInInspector]
-	private float normalizedHorizontalSpeed = 0;
+    [HideInInspector]
+    private float normalizedHorizontalSpeed = 0;
 
-	private CharacterController2D _controller;
-	private RaycastHit2D _lastControllerColliderHit;
-	private Vector3 _velocity;
+    private CharacterController2D _controller;
+    private RaycastHit2D _lastControllerColliderHit;
+    public Vector3 _velocity;
     public Sprite playerSprite;
     SpriteRenderer playerSpriteRenderer;
 
     private static controlPlayer instance;
-    public static controlPlayer Instance {
-        get {
-            if (instance == null) {
-            instance = GameObject.FindObjectOfType<controlPlayer> ();
+    public static controlPlayer Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = GameObject.FindObjectOfType<controlPlayer>();
+            }
+            return instance;
         }
-        return instance;
     }
-}
 
-	void Awake()
-	{
-		_controller = GetComponent<CharacterController2D>();
+
+
+    void Awake()
+    {
+        _controller = GetComponent<CharacterController2D>();
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         playerSprite = playerSpriteRenderer.sprite;
 
-		// listen to some events for illustration purposes
-		_controller.onControllerCollidedEvent += onControllerCollider;
-		_controller.onTriggerEnterEvent += onTriggerEnterEvent;
-		_controller.onTriggerExitEvent += onTriggerExitEvent;
-        playerSpriteRenderer.color = new Vector4(50, 50, 50, 0.2f);
+        // listen to some events for illustration purposes
+        _controller.onControllerCollidedEvent += onControllerCollider;
+        _controller.onTriggerEnterEvent += onTriggerEnterEvent;
+        _controller.onTriggerExitEvent += onTriggerExitEvent;
+    }
 
-        
-	}
+    #region Event Listeners
 
-	#region Event Listeners
+    void onControllerCollider(RaycastHit2D hit)
+    {
+        // bail out on plain old ground hits cause they arent very interesting
+        if (hit.normal.y == 1f)
+            return;
 
-	void onControllerCollider( RaycastHit2D hit )
-	{
-		// bail out on plain old ground hits cause they arent very interesting
-		if( hit.normal.y == 1f )
-			return;
-
-		// logs any collider hits if uncommented. it gets noisy so it is commented out for the demo
-		//Debug.Log( "flags: " + _controller.collisionState + ", hit.normal: " + hit.normal );
-	}
+        // logs any collider hits if uncommented. it gets noisy so it is commented out for the demo
+        //Debug.Log( "flags: " + _controller.collisionState + ", hit.normal: " + hit.normal );
+    }
 
 
-	void onTriggerEnterEvent( Collider2D col )
-	{
-		Debug.Log( "onTriggerEnterEvent: " + col.gameObject.name );
-	}
+    void onTriggerEnterEvent(Collider2D col)
+    {
+        Debug.Log("onTriggerEnterEvent: " + col.gameObject.name);
+    }
 
 
-	void onTriggerExitEvent( Collider2D col )
-	{
-		Debug.Log( "onTriggerExitEvent: " + col.gameObject.name );
-	}
+    void onTriggerExitEvent(Collider2D col)
+    {
+        Debug.Log("onTriggerExitEvent: " + col.gameObject.name);
+    }
 
-	#endregion
+    #endregion
 
+    void Update()
+    {
 
-	// the Update loop contains a very simple example of moving the character around and controlling the animation
-	void Update()
-	{
-        GameObject playerGhost = Instantiate(afterImage, transform.position, transform.rotation);
-
-		//dashCharge = dashCharge + 4; //dash recharge
+        //dashCharge = dashCharge + 40; //dash recharge
         if (dashCharge > 100)
             dashCharge = 100;
 
-		if( _controller.isGrounded )
-			_velocity.y = 0;
+        if (_controller.isGrounded)
+        _velocity.y = 0;
 
         keyPress();
-	}
-
-    void stopKick()
-    {
-        if (locked)
+        if (locked && (_velocity.x != 0 || _controller.isGrounded))
         {
-            locked = false;
-            gravity = -25f;
-            //self.hitbox:rotate(math.rad(-90))
-            //self.hitbox:scale(0.5)
+            GameObject playerGhost = Instantiate(afterImage, transform.position, transform.rotation);
         }
     }
-
-    void kickRecoil()
-    {
-        if (locked)
-        {
-            //dy = -200;
-            //dx = dx * -0.2;
-            //gravity = 600f;
-        }
-        //self.bounceSound:rewind()
-        //self.bounceSound:play()
-    }
-
-    /*void onHitBy() //projectileHit
-    {
-		int oldHealth = health;
-		int breakpoint = 0;
-		while (oldHealth > 20)
-		{
-			breakpoint = breakpoint + 20;
-			oldHealth = oldHealth - 20;
-		}
-
-		//health = health - projectileDamage;
-
-        if (health < 0)
-        {
-            health = 0;
-            locked = true;
-            if (facingLeft)
-            {
-                currAnim = hurtLeftAnim;
-                dx = 100;
-            }
-            else
-            {
-                currAnim = hurtRightAnim;
-                dx = -100;
-            }
-            audio.stop();
-            deadsound.play();
-            gameState = death();
-        }
-		else if (health < breakpoint) //stagger
-		{
-            float invulnTimer = 0.5f;
-	        float lockedTimer = 0.5f;
-			health = breakpoint;
-			locked = true;
-			invuln = true;
-			if (facingLeft)
-            {
-                currAnim = hurtLeftAnim;
-                dx = 100;
-            }
-            else
-            {
-                currAnim = hurtRightAnim;
-                dx = -100;
-            }
-			invulnTimer -= Time.deltaTime;
-			invuln = false;
-			lockedTimer -= Time.deltaTime;
-			locked = false;
-		}
-    }*/
-
-    /*void shoot()
-    {
-        var bullet = (GameObject)Instantiate(
-            bulletPrefab,
-            bulletSpawn.position,
-            bulletSpawn.rotation);
-
-        //audioData = GetComponent<AudioSource>();
-        audioData.Play(0);
-
-        bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.forward * 6;
-        Destroy(bullet, 2.0f);
-	}*/
 
     void keyPress()
     {
-        moveSpeed = 8f;
         if (active && !locked)
         {
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 normalizedHorizontalSpeed = 1;
+
                 if (transform.localScale.x < 0f)
                     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             }
             else if (Input.GetKey(KeyCode.LeftArrow))
             {
                 normalizedHorizontalSpeed = -1;
+
                 if (transform.localScale.x > 0f)
                     transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             }
@@ -224,40 +137,11 @@ public class controlPlayer : MonoBehaviour {
             {
                 _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             }
-            else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50) //create separate dash function
-            {
-                locked = true;
-                moveSpeed = 20f;
-                gravity = 0;
-                //dashSound.Play();
-                dashCharge = dashCharge - 50;
-                //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-                //still need to apply velocity
-                if (Input.GetKey(KeyCode.UpArrow))
-                {
-
-                }
-                if (Input.GetKey(KeyCode.DownArrow))
-                {
-
-                }
-                else
-                {
-                    //dy = 0;
-                }
-                invuln = true;
-                //self.hitbox:rotate(math.rad(90))
-                //self.hitbox:scale(2)
-                float invulnTimer = 0.1f;
-                invulnTimer -= Time.deltaTime;
-                invuln = false;
-                float kickTimer = 0.5f;
-                kickTimer -= Time.deltaTime;
-                stopKick();
-            }
+            else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
+                dash();
             else if (Input.GetKeyDown(KeyCode.V))
             {
-                if (Camera.main.GetComponent<CamShake>() != null)
+                if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
             }
         }
@@ -271,13 +155,68 @@ public class controlPlayer : MonoBehaviour {
 
         _controller.move(_velocity * Time.deltaTime);
 
-        // grab our current _velocity to use as a base for all calculations
-        //_velocity = _controller.velocity;
-
         if (locked)
         {
             //smoke trail system for dash
         }
+    }
+
+    void dash()
+    {
+        locked = true;
+        gravity = 0;
+        //dashSound.Play();
+        dashCharge = dashCharge - 50;
+        //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        //still need to apply velocity
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            //diagonal dashing, add y factor
+            //dx = dx * 0.5
+
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+
+        }
+        else
+        {
+            _velocity.y = 0;
+        }
+        invuln = true;
+        //self.hitbox:rotate(math.rad(90))
+        //self.hitbox:scale(2)
+        float invulnTimer = 0.1f;
+        invulnTimer -= Time.deltaTime;
+        invuln = false;
+        float kickTimer = 5f;
+        kickTimer -= Time.deltaTime;
+        //Debug.Log(kickTimer);
+        stopKick();
+
+    }
+
+    void stopKick()
+    {
+        if (locked)
+        {
+            locked = false;
+            gravity = -25f;
+            //self.hitbox:rotate(math.rad(-90))
+            //self.hitbox:scale(0.5)
+        }
+    }
+
+    void kickRecoil()
+    {
+        if (locked)
+        {
+            //dy = -200;
+            //dx = dx * -0.2;
+            gravity = -25f;
+        }
+        //self.bounceSound:rewind()
+        //self.bounceSound:play()
     }
 
 }
