@@ -12,14 +12,17 @@ public class controlPlayer : MonoBehaviour {
 	public float jumpHeight = 3f;
 	public float dashCharge = 100f;
     public float dashSpeed = 8f;
+    public float dashTime = 3f;
+    public float currDashTime;
 
 	public bool active = true;
 	public bool locked = false;
 	public bool firing = false;
 	bool facingLeft = false;
 	bool invuln = false;
-    //double dx;
-    //double dy;
+
+    [SerializeField]
+    GameObject afterImage;
 
 	[HideInInspector]
 	private float normalizedHorizontalSpeed = 0;
@@ -27,15 +30,32 @@ public class controlPlayer : MonoBehaviour {
 	private CharacterController2D _controller;
 	private RaycastHit2D _lastControllerColliderHit;
 	private Vector3 _velocity;
+    public Sprite playerSprite;
+    SpriteRenderer playerSpriteRenderer;
+
+    private static controlPlayer instance;
+    public static controlPlayer Instance {
+        get {
+            if (instance == null) {
+            instance = GameObject.FindObjectOfType<controlPlayer> ();
+        }
+        return instance;
+    }
+}
 
 	void Awake()
 	{
 		_controller = GetComponent<CharacterController2D>();
+        playerSpriteRenderer = GetComponent<SpriteRenderer>();
+        playerSprite = playerSpriteRenderer.sprite;
 
 		// listen to some events for illustration purposes
 		_controller.onControllerCollidedEvent += onControllerCollider;
 		_controller.onTriggerEnterEvent += onTriggerEnterEvent;
 		_controller.onTriggerExitEvent += onTriggerExitEvent;
+        playerSpriteRenderer.color = new Vector4(50, 50, 50, 0.2f);
+
+        
 	}
 
 	#region Event Listeners
@@ -68,9 +88,11 @@ public class controlPlayer : MonoBehaviour {
 	// the Update loop contains a very simple example of moving the character around and controlling the animation
 	void Update()
 	{
-		dashCharge = dashCharge + 40; //dash recharge
-        	if (dashCharge > 100)
-            	dashCharge = 100;
+        GameObject playerGhost = Instantiate(afterImage, transform.position, transform.rotation);
+
+		//dashCharge = dashCharge + 4; //dash recharge
+        if (dashCharge > 100)
+            dashCharge = 100;
 
 		if( _controller.isGrounded )
 			_velocity.y = 0;
@@ -202,7 +224,7 @@ public class controlPlayer : MonoBehaviour {
             {
                 _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             }
-            else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
+            else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50) //create separate dash function
             {
                 locked = true;
                 moveSpeed = 20f;
@@ -210,6 +232,7 @@ public class controlPlayer : MonoBehaviour {
                 //dashSound.Play();
                 dashCharge = dashCharge - 50;
                 //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                //still need to apply velocity
                 if (Input.GetKey(KeyCode.UpArrow))
                 {
 
@@ -221,16 +244,16 @@ public class controlPlayer : MonoBehaviour {
                 else
                 {
                     //dy = 0;
-                    invuln = true;
-                    //self.hitbox:rotate(math.rad(90))
-                    //self.hitbox:scale(2)
-                    float invulnTimer = 0.1f;
-                    invulnTimer -= Time.deltaTime;
-                    invuln = false;
-                    float kickTimer = 0.5f;
-                    kickTimer -= Time.deltaTime;
-                    stopKick();
                 }
+                invuln = true;
+                //self.hitbox:rotate(math.rad(90))
+                //self.hitbox:scale(2)
+                float invulnTimer = 0.1f;
+                invulnTimer -= Time.deltaTime;
+                invuln = false;
+                float kickTimer = 0.5f;
+                kickTimer -= Time.deltaTime;
+                stopKick();
             }
             else if (Input.GetKeyDown(KeyCode.V))
             {
@@ -239,8 +262,6 @@ public class controlPlayer : MonoBehaviour {
             }
         }
 
-
-
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * moveSpeed, Time.deltaTime * smoothedMovementFactor);
@@ -248,18 +269,10 @@ public class controlPlayer : MonoBehaviour {
         // apply gravity before moving
         _velocity.y += gravity * Time.deltaTime;
 
-        // if holding down bump up our movement amount and turn off one way platform detection for a frame.
-        // this lets us jump down through one way platforms
-        if (_controller.isGrounded && Input.GetKey(KeyCode.DownArrow))
-        {
-            _velocity.y *= 3f;
-            _controller.ignoreOneWayPlatformsThisFrame = true;
-        }
-
         _controller.move(_velocity * Time.deltaTime);
 
         // grab our current _velocity to use as a base for all calculations
-        _velocity = _controller.velocity;
+        //_velocity = _controller.velocity;
 
         if (locked)
         {

@@ -154,9 +154,9 @@ GameObject:
   m_Component:
   - component: {fileID: 409190841}
   - component: {fileID: 409190840}
+  - component: {fileID: 409190843}
   - component: {fileID: 409190839}
   - component: {fileID: 409190838}
-  - component: {fileID: 409190843}
   - component: {fileID: 409190837}
   m_Layer: 0
   m_Name: Player
@@ -346,9 +346,13 @@ MonoBehaviour:
   jumpHeight: 3
   dashCharge: 100
   dashSpeed: 8
+  dashTime: 3
+  currDashTime: 0
   active: 1
   locked: 0
   firing: 0
+  afterImage: {fileID: 1048162652394594, guid: f86ae42cddc172d46a1a3db6dec7d556, type: 2}
+  playerSprite: {fileID: 21300000, guid: 3e80be99b86f4c645b5fcf92385d3468, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
