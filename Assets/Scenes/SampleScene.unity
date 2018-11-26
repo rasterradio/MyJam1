@@ -324,7 +324,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.57042336, y: -0.050685767, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 2044798181}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -347,11 +348,14 @@ MonoBehaviour:
   dashCharge: 100
   dashSpeed: 8
   dashTime: 3
-  currDashTime: 0
-  active: 1
+  bulletPrefab: {fileID: 1964089201812378, guid: 98d5c198d6ea4e74fb3ce54e407fb519,
+    type: 2}
+  FirePoint: {fileID: 2044798181}
   locked: 0
   firing: 0
   afterImage: {fileID: 1048162652394594, guid: f86ae42cddc172d46a1a3db6dec7d556, type: 2}
+  normalizedHorizontalSpeed: 0
+  _velocity: {x: 0, y: 0, z: 0}
   playerSprite: {fileID: 21300000, guid: 3e80be99b86f4c645b5fcf92385d3468, type: 3}
 --- !u!1 &519420028
 GameObject:
@@ -762,6 +766,34 @@ Transform:
   m_LocalScale: {x: 0.61652225, y: 11.000128, z: 1}
   m_Children: []
   m_Father: {fileID: 343956218}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2044798180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2044798181}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2044798181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2044798180}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.43, y: 0.06, z: -0.1171875}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 409190841}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2077196410
