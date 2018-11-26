@@ -347,7 +347,7 @@ MonoBehaviour:
   jumpHeight: 3
   dashCharge: 100
   dashSpeed: 8
-  dashTime: 3
+  dashTime: 0.5
   bulletPrefab: {fileID: 1964089201812378, guid: 98d5c198d6ea4e74fb3ce54e407fb519,
     type: 2}
   FirePoint: {fileID: 2044798181}

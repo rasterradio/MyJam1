@@ -12,13 +12,14 @@ public class controlPlayer : MonoBehaviour
     public float jumpHeight = 3f;
     public float dashCharge = 100f;
     public float dashSpeed = 8f;
-    public float dashTime = 3f;
+    public float dashTime = 0.5f;
     float fireRate = 0.3f;
     float nextFire = 0f;
     public GameObject bulletPrefab;
     enum facing { Left, Right };
     string aimDirection;
     public Transform FirePoint;
+    Vector3 dashDirection;
 
     public bool locked = false;
     public bool firing = false;
@@ -97,9 +98,19 @@ public class controlPlayer : MonoBehaviour
             _velocity.y = 0;
 
         keyPress();
-        if (locked && (_velocity.x != 0 || _controller.isGrounded))
+        //if (!locked) //to use only on walking instead of also on dash
+            applyMovement();
+        if (locked)// && (_velocity.x != 0 || _controller.isGrounded))
         {
-            GameObject playerGhost = Instantiate(afterImage, transform.position, transform.rotation);
+            //need to add smoke trail
+            Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
+        }
+        if (locked)
+        {
+            if (dashTime > 0)
+                dashTime -= Time.deltaTime;
+            else
+                stopKick();
         }
     }
 
@@ -140,6 +151,8 @@ public class controlPlayer : MonoBehaviour
                 normalizedHorizontalSpeed = 0;
                 aimDirection = "";
             }
+            if (locked)
+                return;
 
             // we can only jump whilst grounded
             if (_controller.isGrounded && Input.GetKeyDown(KeyCode.Z))
@@ -153,9 +166,7 @@ public class controlPlayer : MonoBehaviour
                 if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
             }
-        }
-        if (!locked)
-        {
+            //if (!locked) //for if we don't want player to move while shooting
             if (Input.GetKey(KeyCode.X) && Time.time > nextFire)
             {
                 nextFire = Time.time + fireRate;
@@ -165,20 +176,18 @@ public class controlPlayer : MonoBehaviour
             else
                 firing = false;
         }
+    }
 
+    void applyMovement()
+    {
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
         _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * moveSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
-        _velocity.y += gravity * Time.deltaTime;
+        _velocity.y += gravity * Time.deltaTime; //causing constant flickering subtle velocity, get Wilson to look at this
 
         _controller.move(_velocity * Time.deltaTime);
-
-        if (locked)
-        {
-            //smoke trail system for dash
-        }
     }
 
     void shoot()
@@ -208,25 +217,41 @@ public class controlPlayer : MonoBehaviour
         gravity = 0;
         //dashSound.Play();
         //start a timer on keypress, update it on update
-        dashCharge = dashCharge - 50;
+        dashTime = 0.5f;
+        dashCharge -= 50;
         //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         //still need to apply velocity
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (myFacing == facing.Right)
+            _velocity.x += dashSpeed;
+            //if (transform.localScale.x > 0f)
+                //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        if (myFacing == facing.Left)
+            _velocity.x -= dashSpeed;
+            //if (transform.localScale.x < 0f)
+                //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
+        if (aimDirection == "up")
         {
             //diagonal dashing, add y factor
-            _velocity.x = _velocity.x * 0.5f;
+            //_velocity.x = _velocity.x * 0.5f;
             //_velocity.y does something
+            _velocity.y += dashSpeed;
         }
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (aimDirection == "down")
         {
-            _velocity.x = _velocity.x * 0.5f;
+            //_velocity.x = _velocity.x * 0.5f;
             //_velocity.y does something
+            _velocity.y -= dashSpeed;
         }
         else
         {
             _velocity.y = 0;
         }
-        invuln = true;
+        //dashDirection = new Vector3(0, 0, dashSpeed); //alternate movement to universal movement imported by other script?
+        //_controller.move(dashDirection * Time.deltaTime);
+
+
+        /*invuln = true;
         //self.hitbox:rotate(math.rad(90))
         //self.hitbox:scale(2)
         float invulnTimer = 0.1f;
@@ -235,7 +260,7 @@ public class controlPlayer : MonoBehaviour
         float kickTimer = 5f;
         kickTimer -= Time.deltaTime;
         //Debug.Log(kickTimer);
-        stopKick();
+        //stopKick();*/
 
     }
 

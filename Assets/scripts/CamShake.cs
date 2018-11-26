@@ -8,11 +8,11 @@ public class CamShake : MonoBehaviour {
     public Vector3 startPos;
     float shakeAmount = 0f;
     float camTimer = 0.5f;
-    SmoothFollow camFollow;
+    //SmoothFollow camFollow;
 
     private void Awake()
     {
-        camFollow = GetComponent<SmoothFollow>();
+        //camFollow = GetComponent<SmoothFollow>();
         startPos = transform.position;
         if (mainCam == null)
             mainCam = Camera.main;
