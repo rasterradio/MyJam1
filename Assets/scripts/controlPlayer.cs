@@ -35,6 +35,7 @@ public class controlPlayer : MonoBehaviour
     private RaycastHit2D _lastControllerColliderHit;
     public Vector3 _velocity;
     public Sprite playerSprite;
+    public Animator anim;
     SpriteRenderer playerSpriteRenderer;
     facing myFacing = facing.Right;
 
@@ -90,6 +91,11 @@ public class controlPlayer : MonoBehaviour
 
     void Update()
     {
+        anim.SetFloat("speed", Mathf.Abs(_velocity.x));
+        if (!_controller.isGrounded)
+            anim.SetBool("jumping", true);
+        else
+            anim.SetBool("jumping", false);
         dashCharge = dashCharge + 40; //dash recharge
         if (dashCharge > 100)
             dashCharge = 100;
@@ -98,7 +104,7 @@ public class controlPlayer : MonoBehaviour
             _velocity.y = 0;
 
         keyPress();
-        //if (!locked) //to use only on walking instead of also on dash
+        if (!locked) //to use only on walking instead of also on dash
             applyMovement();
         if (locked)// && (_velocity.x != 0 || _controller.isGrounded))
         {
@@ -215,6 +221,8 @@ public class controlPlayer : MonoBehaviour
     {
         locked = true;
         gravity = 0;
+        _velocity.x = 0;
+        _velocity.y = 0;
         //dashSound.Play();
         //start a timer on keypress, update it on update
         dashTime = 0.5f;
