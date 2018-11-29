@@ -20,6 +20,7 @@ public class controlPlayer : MonoBehaviour
     string aimDirection;
     public Transform FirePoint;
     Vector3 dashDirection;
+    public ParticleSystem dust;
 
     public bool locked = false;
     public bool firing = false;
@@ -56,6 +57,8 @@ public class controlPlayer : MonoBehaviour
         _controller = GetComponent<CharacterController2D>();
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         playerSprite = playerSpriteRenderer.sprite;
+        //dust = GetComponent<ParticleSystem>();
+        dust.Stop();
 
         // listen to some events for illustration purposes
         _controller.onControllerCollidedEvent += onControllerCollider;
@@ -104,8 +107,16 @@ public class controlPlayer : MonoBehaviour
             _velocity.y = 0;
 
         keyPress();
-        if (!locked) //to use only on walking instead of also on dash
+        //if (!locked) //to use only on walking instead of also on dash
             applyMovement();
+        if (locked)// && (_velocity.x != 0 || _controller.isGrounded))
+        {
+            //need to add smoke trail
+            dust.Play();
+            dust.enableEmission = true;
+            //dust.emission.enabled;
+            Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
+        }
         if (locked)
         {
             Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
@@ -115,6 +126,8 @@ public class controlPlayer : MonoBehaviour
             else
                 stopKick();
         }
+        if (!locked)
+            dust.Stop();
     }
 
     void keyPress()
