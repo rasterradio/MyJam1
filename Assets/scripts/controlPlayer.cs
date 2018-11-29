@@ -106,13 +106,10 @@ public class controlPlayer : MonoBehaviour
         keyPress();
         if (!locked) //to use only on walking instead of also on dash
             applyMovement();
-        if (locked)// && (_velocity.x != 0 || _controller.isGrounded))
-        {
-            //need to add smoke trail
-            Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
-        }
         if (locked)
         {
+            Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
+
             if (dashTime > 0)
                 dashTime -= Time.deltaTime;
             else
@@ -166,7 +163,9 @@ public class controlPlayer : MonoBehaviour
                 _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             }
             else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
+            {
                 dash();
+            }
             else if (Input.GetKeyDown(KeyCode.V))
             {
                 if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
@@ -180,7 +179,9 @@ public class controlPlayer : MonoBehaviour
                 shoot();
             }
             else
+            {
                 firing = false;
+            }
         }
     }
 
@@ -230,11 +231,11 @@ public class controlPlayer : MonoBehaviour
         //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         //still need to apply velocity
         if (myFacing == facing.Right)
-            _velocity.x += dashSpeed;
+            _velocity.x = dashSpeed;
             //if (transform.localScale.x > 0f)
                 //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         if (myFacing == facing.Left)
-            _velocity.x -= dashSpeed;
+            _velocity.x = -dashSpeed;
             //if (transform.localScale.x < 0f)
                 //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
@@ -245,7 +246,7 @@ public class controlPlayer : MonoBehaviour
             //_velocity.y does something
             _velocity.y += dashSpeed;
         }
-        if (aimDirection == "down")
+        else if (aimDirection == "down")
         {
             //_velocity.x = _velocity.x * 0.5f;
             //_velocity.y does something
@@ -257,6 +258,7 @@ public class controlPlayer : MonoBehaviour
         }
         //dashDirection = new Vector3(0, 0, dashSpeed); //alternate movement to universal movement imported by other script?
         //_controller.move(dashDirection * Time.deltaTime);
+        applyMovement();
 
 
         /*invuln = true;
