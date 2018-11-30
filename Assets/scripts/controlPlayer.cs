@@ -181,6 +181,8 @@ public class controlPlayer : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
             {
+                if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
+                    Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
                 dash();
             }
             else if (Input.GetKeyDown(KeyCode.V))

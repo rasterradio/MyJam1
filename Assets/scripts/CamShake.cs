@@ -13,13 +13,16 @@ public class CamShake : MonoBehaviour {
     private void Awake()
     {
         //camFollow = GetComponent<SmoothFollow>();
-        startPos = transform.position;
+        /*startPos = transform.position;
         if (mainCam == null)
-            mainCam = Camera.main;
+            mainCam = Camera.main;*/
     }
 
     public void Shake(float amt, float length)
     {
+        startPos = transform.position;
+        if (mainCam == null)
+            mainCam = Camera.main;
         shakeAmount = amt;
         InvokeRepeating("DoShake", 0, 0.01f);
         Invoke("StopShake", length);
