@@ -159,7 +159,6 @@ GameObject:
   - component: {fileID: 409190838}
   - component: {fileID: 409190842}
   - component: {fileID: 409190837}
-  - component: {fileID: 409190844}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -199,8 +198,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 371484057
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300010, guid: 69ee48a1ac069ac4b91a0fa26425a386, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -375,23 +374,15 @@ MonoBehaviour:
   dust: {fileID: 1969335485}
   locked: 0
   firing: 0
+  jumpSound: {fileID: 8300000, guid: 7dd29e207ea88ab49846c70907602cec, type: 3}
+  dashSound: {fileID: 8300000, guid: e9e545cd37987074a9b9842af0f22ff9, type: 3}
+  fireSound: {fileID: 8300000, guid: bffac54abcaf07745a3d3263c1e342e4, type: 3}
+  hitSound: {fileID: 0}
   afterImage: {fileID: 1048162652394594, guid: f86ae42cddc172d46a1a3db6dec7d556, type: 2}
   normalizedHorizontalSpeed: 0
   _velocity: {x: 0, y: 0, z: 0}
   playerSprite: {fileID: 21300000, guid: 3e80be99b86f4c645b5fcf92385d3468, type: 3}
   anim: {fileID: 409190842}
---- !u!114 &409190844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 409190836}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2622102379f85b9488685ea8c7982b01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PPU: 19
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,7 +415,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84ef52d821acdaf48b2cf53934f10a54, type: 3}
   m_Name: 

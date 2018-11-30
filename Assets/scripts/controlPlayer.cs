@@ -26,6 +26,11 @@ public class controlPlayer : MonoBehaviour
     public bool firing = false;
     bool invuln = false;
 
+    public AudioClip jumpSound;
+    public AudioClip dashSound;
+    public AudioClip fireSound;
+    public AudioClip hitSound;
+
     [SerializeField]
     GameObject afterImage;
 
@@ -57,8 +62,8 @@ public class controlPlayer : MonoBehaviour
         _controller = GetComponent<CharacterController2D>();
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
         playerSprite = playerSpriteRenderer.sprite;
-        //dust = GetComponent<ParticleSystem>();
-        dust.Stop();
+        dust = GetComponent<ParticleSystem>();
+        //dust.Stop();
 
         // listen to some events for illustration purposes
         _controller.onControllerCollidedEvent += onControllerCollider;
@@ -108,13 +113,10 @@ public class controlPlayer : MonoBehaviour
 
         keyPress();
         //if (!locked) //to use only on walking instead of also on dash
-            applyMovement();
+        applyMovement();
         if (locked)// && (_velocity.x != 0 || _controller.isGrounded))
         {
-            //need to add smoke trail
-            dust.Play();
-            dust.enableEmission = true;
-            //dust.emission.enabled;
+            //dust.Play();
             Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
         }
         if (locked)
@@ -125,12 +127,14 @@ public class controlPlayer : MonoBehaviour
             if (dashTime > 0)
                 dashTime -= Time.deltaTime;
             else
+            {
                 stopKick();
+            }
         }
         if (!locked)
         {
             anim.SetBool("dashing", false);
-            dust.Stop();
+            //dust.Pause();
         }
     }
 
@@ -177,10 +181,12 @@ public class controlPlayer : MonoBehaviour
             // we can only jump whilst grounded
             if (_controller.isGrounded && Input.GetKeyDown(KeyCode.Z))
             {
+                AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
                 _velocity.y = Mathf.Sqrt(2f * jumpHeight * -gravity);
             }
             else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
             {
+                AudioSource.PlayClipAtPoint(dashSound, Camera.main.transform.position);
                 if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
                 dash();
@@ -193,6 +199,7 @@ public class controlPlayer : MonoBehaviour
             //if (!locked) //for if we don't want player to move while shooting
             if (Input.GetKey(KeyCode.X) && Time.time > nextFire)
             {
+                AudioSource.PlayClipAtPoint(fireSound, Camera.main.transform.position);
                 nextFire = Time.time + fireRate;
                 firing = true;
                 shoot();
@@ -243,7 +250,6 @@ public class controlPlayer : MonoBehaviour
         gravity = 0;
         _velocity.x = 0;
         _velocity.y = 0;
-        //dashSound.Play();
         //start a timer on keypress, update it on update
         dashTime = 0.5f;
         dashCharge -= 50;
@@ -251,12 +257,12 @@ public class controlPlayer : MonoBehaviour
         //still need to apply velocity
         if (myFacing == facing.Right)
             _velocity.x = dashSpeed;
-            //if (transform.localScale.x > 0f)
-                //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        //if (transform.localScale.x > 0f)
+        //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         if (myFacing == facing.Left)
             _velocity.x = -dashSpeed;
-            //if (transform.localScale.x < 0f)
-                //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        //if (transform.localScale.x < 0f)
+        //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
         if (aimDirection == "up")
         {
@@ -287,9 +293,9 @@ public class controlPlayer : MonoBehaviour
         invulnTimer -= Time.deltaTime;
         invuln = false;
         float kickTimer = 5f;
-        kickTimer -= Time.deltaTime;
+        kickTimer -= Time.deltaTime;*/
         //Debug.Log(kickTimer);
-        //stopKick();*/
+        //stopKick();
 
     }
 
@@ -301,6 +307,7 @@ public class controlPlayer : MonoBehaviour
             gravity = -25f;
             //self.hitbox:rotate(math.rad(-90))
             //self.hitbox:scale(0.5)
+            //kickRecoil();
         }
     }
 
