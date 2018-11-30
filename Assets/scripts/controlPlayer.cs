@@ -119,6 +119,7 @@ public class controlPlayer : MonoBehaviour
         }
         if (locked)
         {
+            anim.SetBool("dashing", true);
             Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
 
             if (dashTime > 0)
@@ -127,7 +128,10 @@ public class controlPlayer : MonoBehaviour
                 stopKick();
         }
         if (!locked)
+        {
+            anim.SetBool("dashing", false);
             dust.Stop();
+        }
     }
 
     void keyPress()
