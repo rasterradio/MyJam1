@@ -215,7 +215,9 @@ public class controlPlayer : MonoBehaviour
     {
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
-        _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * moveSpeed, Time.deltaTime * smoothedMovementFactor);
+        
+        if (!locked)
+            _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * moveSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
         _velocity.y += gravity * Time.deltaTime; //causing constant flickering subtle velocity, get Wilson to look at this
