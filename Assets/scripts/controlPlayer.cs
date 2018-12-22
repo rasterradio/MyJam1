@@ -191,10 +191,11 @@ public class controlPlayer : MonoBehaviour
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
                 dash();
             }
-            else if (Input.GetKeyDown(KeyCode.V))
+            else if (Input.GetKeyDown(KeyCode.V)) //testing key
             {
-                if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
-                    Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
+                //if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
+                //Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
+                HurtPlayer();
             }
             //if (!locked) //for if we don't want player to move while shooting
             if (Input.GetKey(KeyCode.X) && Time.time > nextFire)
@@ -215,12 +216,12 @@ public class controlPlayer : MonoBehaviour
     {
         // apply horizontal speed smoothing it. dont really do this with Lerp. Use SmoothDamp or something that provides more control
         var smoothedMovementFactor = _controller.isGrounded ? groundDamping : inAirDamping; // how fast do we change direction?
-        
+
         if (!locked)
             _velocity.x = Mathf.Lerp(_velocity.x, normalizedHorizontalSpeed * moveSpeed, Time.deltaTime * smoothedMovementFactor);
 
         // apply gravity before moving
-        _velocity.y += gravity * Time.deltaTime; //causing constant flickering subtle velocity, get Wilson to look at this
+        _velocity.y += gravity * Time.deltaTime;
 
         _controller.move(_velocity * Time.deltaTime);
     }
@@ -232,17 +233,32 @@ public class controlPlayer : MonoBehaviour
         {
             go.GetComponent<bullet>().ySpeed += 0.1f;
         }
-        if (aimDirection == "down")
+        else if (aimDirection == "down")
         {
             go.GetComponent<bullet>().ySpeed -= 0.1f;
         }
-        if (myFacing == facing.Left)
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             go.GetComponent<bullet>().xSpeed -= 0.1f;
+            if (aimDirection == "up")
+                go.GetComponent<bullet>().ySpeed += 0.1f;
+            else if (aimDirection == "down")
+                go.GetComponent<bullet>().ySpeed -= 0.1f;
         }
-        else if (myFacing == facing.Right)
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
             go.GetComponent<bullet>().xSpeed += 0.1f;
+            if (aimDirection == "up")
+                go.GetComponent<bullet>().ySpeed += 0.1f;
+            else if (aimDirection == "down")
+                go.GetComponent<bullet>().ySpeed -= 0.1f;
+        }
+        else
+        {
+            if (myFacing == facing.Left)
+                go.GetComponent<bullet>().xSpeed -= 0.1f;
+            if (myFacing == facing.Right)
+                go.GetComponent<bullet>().xSpeed += 0.1f;
         }
     }
 
@@ -255,36 +271,23 @@ public class controlPlayer : MonoBehaviour
         //start a timer on keypress, update it on update
         dashTime = 0.5f;
         dashCharge -= 50;
-        //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        //still need to apply velocity
         if (myFacing == facing.Right)
             _velocity.x = dashSpeed;
-        //if (transform.localScale.x > 0f)
-        //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         if (myFacing == facing.Left)
             _velocity.x = -dashSpeed;
-        //if (transform.localScale.x < 0f)
-        //transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
         if (aimDirection == "up")
         {
-            //diagonal dashing, add y factor
-            //_velocity.x = _velocity.x * 0.5f;
-            //_velocity.y does something
             _velocity.y += dashSpeed;
         }
         else if (aimDirection == "down")
         {
-            //_velocity.x = _velocity.x * 0.5f;
-            //_velocity.y does something
             _velocity.y -= dashSpeed;
         }
         else
         {
             _velocity.y = 0;
         }
-        //dashDirection = new Vector3(0, 0, dashSpeed); //alternate movement to universal movement imported by other script?
-        //_controller.move(dashDirection * Time.deltaTime);
         applyMovement();
 
 
@@ -323,5 +326,17 @@ public class controlPlayer : MonoBehaviour
         }
         //bounceSound:play()
     }
+
+    public void HurtPlayer()
+    {
+        StartCoroutine("ShowHitFlash");
+    }
+
+    IEnumerator ShowHitFlash()
+    {        
+        playerSpriteRenderer.material.shader = Shader.Find("PaintWhite");
+        yield return new WaitForSeconds(0.25f);
+        playerSpriteRenderer.material.shader = Shader.Find("Sprites/Default");
+     }
 
 }
