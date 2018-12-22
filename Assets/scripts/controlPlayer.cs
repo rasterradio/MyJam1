@@ -99,11 +99,21 @@ public class controlPlayer : MonoBehaviour
 
     void Update()
     {
+        //setting animation states
         anim.SetFloat("speed", Mathf.Abs(_velocity.x));
         if (!_controller.isGrounded)
             anim.SetBool("jumping", true);
         else
             anim.SetBool("jumping", false);
+        if (aimDirection == "up")
+            anim.SetBool("aimUp", true);
+        else
+            anim.SetBool("aimUp", false);
+        if (aimDirection == "down")
+            anim.SetBool("aimDown", true);
+        else
+            anim.SetBool("aimDown", false);
+
         dashCharge = dashCharge + 40; //dash recharge
         if (dashCharge > 100)
             dashCharge = 100;
@@ -187,15 +197,14 @@ public class controlPlayer : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
             {
                 AudioSource.PlayClipAtPoint(dashSound, Camera.main.transform.position);
+                flashPlayer();
                 if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
                 dash();
             }
             else if (Input.GetKeyDown(KeyCode.V)) //testing key
             {
-                //if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
-                //Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
-                HurtPlayer();
+
             }
             //if (!locked) //for if we don't want player to move while shooting
             if (Input.GetKey(KeyCode.X) && Time.time > nextFire)
@@ -327,15 +336,15 @@ public class controlPlayer : MonoBehaviour
         //bounceSound:play()
     }
 
-    public void HurtPlayer()
+    public void flashPlayer()
     {
-        StartCoroutine("ShowHitFlash");
+        StartCoroutine("showHitFlash");
     }
 
-    IEnumerator ShowHitFlash()
+    IEnumerator showHitFlash()
     {        
         playerSpriteRenderer.material.shader = Shader.Find("PaintWhite");
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.15f);
         playerSpriteRenderer.material.shader = Shader.Find("Sprites/Default");
      }
 

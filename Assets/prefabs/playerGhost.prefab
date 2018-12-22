@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4236339813253260}
   - component: {fileID: 212592436074968496}
   - component: {fileID: 114636764216096336}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: playerGhost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300008, guid: 22e80936b2a6f584396f627e0cf25754, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.21938412, g: 0.23686601, b: 0.5471698, a: 0.5176471}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
