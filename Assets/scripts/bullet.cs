@@ -12,7 +12,6 @@ public class bullet : MonoBehaviour
     {
         myPlayer = GameObject.FindObjectOfType<controlPlayer>();
         xSpeed += (myPlayer._velocity.x * Time.deltaTime);
-        transform.Rotate(Vector3.forward * -90); //rotation won't matter when bullets are circular
     }
 
     void Update()
@@ -28,9 +27,14 @@ public class bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void onTriggerEnter2D(Collider2D hitInfo)
-    {
-        Debug.Log(hitInfo.name);
+    void OnTriggerEnter2D (Collider2D col) 
+	{
+        Debug.Log(col.name);
         Destroy(gameObject);
+        if (col.tag == "Enemy")
+        {
+            Debug.Log("HIT ENEMY");
+          //do stuff to enemy
+        }
     }
 }

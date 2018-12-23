@@ -8,6 +8,8 @@ public class ballEnemy : MonoBehaviour {
 
 	public AudioClip ballHitSound;
 
+	int hp = 1;
+
 	void Awake(){
 		ballSpriteRenderer = GetComponent<SpriteRenderer>();
 	}
