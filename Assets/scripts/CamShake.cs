@@ -7,16 +7,6 @@ public class CamShake : MonoBehaviour {
     public Camera mainCam;
     public Vector3 startPos;
     float shakeAmount = 0f;
-    float camTimer = 0.5f;
-    //SmoothFollow camFollow;
-
-    private void Awake()
-    {
-        //camFollow = GetComponent<SmoothFollow>();
-        /*startPos = transform.position;
-        if (mainCam == null)
-            mainCam = Camera.main;*/
-    }
 
     public void Shake(float amt, float length)
     {
@@ -30,7 +20,6 @@ public class CamShake : MonoBehaviour {
 
     void DoShake()
     {
-        //camFollow.enabled = false;
        
         if (shakeAmount > 0)
         {
@@ -51,12 +40,5 @@ public class CamShake : MonoBehaviour {
     {
         CancelInvoke("DoShake");
         mainCam.transform.localPosition = startPos;
-        /*if (camTimer > 0)
-        {
-            camTimer -= Time.deltaTime;
-        }
-        else
-            camFollow.enabled = true;*/
-
     }
 }

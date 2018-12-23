@@ -24,12 +24,13 @@ public class controlPlayer : MonoBehaviour
 
     public bool locked = false;
     public bool firing = false;
-    bool invuln = false;
+    //bool invuln = false;
 
     public AudioClip jumpSound;
     public AudioClip dashSound;
     public AudioClip fireSound;
     public AudioClip hitSound;
+    public AudioClip bounceSound;
 
     [SerializeField]
     GameObject afterImage;
@@ -40,7 +41,6 @@ public class controlPlayer : MonoBehaviour
     private CharacterController2D _controller;
     private RaycastHit2D _lastControllerColliderHit;
     public Vector3 _velocity;
-    public Sprite playerSprite;
     public Animator anim;
     SpriteRenderer playerSpriteRenderer;
     facing myFacing = facing.Right;
@@ -61,9 +61,8 @@ public class controlPlayer : MonoBehaviour
     {
         _controller = GetComponent<CharacterController2D>();
         playerSpriteRenderer = GetComponent<SpriteRenderer>();
-        playerSprite = playerSpriteRenderer.sprite;
-        dust = GetComponent<ParticleSystem>();
-        //dust.Stop();
+        dust = GetComponentInChildren<ParticleSystem>();
+        dust.Stop();
 
         // listen to some events for illustration purposes
         _controller.onControllerCollidedEvent += onControllerCollider;
@@ -126,26 +125,20 @@ public class controlPlayer : MonoBehaviour
         applyMovement();
         if (locked)// && (_velocity.x != 0 || _controller.isGrounded))
         {
-            //dust.Play();
-            Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
+            Instantiate(afterImage, transform.position, transform.rotation);
         }
         if (locked)
         {
             anim.SetBool("dashing", true);
-            Instantiate(afterImage, transform.position, transform.rotation);//change afterimage life so they all get destroyed at same time
+            Instantiate(afterImage, transform.position, transform.rotation);
 
             if (dashTime > 0)
                 dashTime -= Time.deltaTime;
             else
-            {
                 stopKick();
-            }
         }
         if (!locked)
-        {
             anim.SetBool("dashing", false);
-            //dust.Pause();
-        }
     }
 
     void keyPress()
@@ -198,6 +191,7 @@ public class controlPlayer : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(dashSound, Camera.main.transform.position);
                 flashPlayer();
+                dust.Play();
                 if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
                 dash();
@@ -215,9 +209,7 @@ public class controlPlayer : MonoBehaviour
                 shoot();
             }
             else
-            {
                 firing = false;
-            }
         }
     }
 
@@ -277,7 +269,6 @@ public class controlPlayer : MonoBehaviour
         gravity = 0;
         _velocity.x = 0;
         _velocity.y = 0;
-        //start a timer on keypress, update it on update
         dashTime = 0.5f;
         dashCharge -= 50;
         if (myFacing == facing.Right)
@@ -286,17 +277,11 @@ public class controlPlayer : MonoBehaviour
             _velocity.x = -dashSpeed;
 
         if (aimDirection == "up")
-        {
             _velocity.y += dashSpeed;
-        }
         else if (aimDirection == "down")
-        {
             _velocity.y -= dashSpeed;
-        }
         else
-        {
             _velocity.y = 0;
-        }
         applyMovement();
 
 
@@ -305,12 +290,7 @@ public class controlPlayer : MonoBehaviour
         //self.hitbox:scale(2)
         float invulnTimer = 0.1f;
         invulnTimer -= Time.deltaTime;
-        invuln = false;
-        float kickTimer = 5f;
-        kickTimer -= Time.deltaTime;*/
-        //Debug.Log(kickTimer);
-        //stopKick();
-
+        invuln = false;*/
     }
 
     void stopKick()
@@ -319,21 +299,20 @@ public class controlPlayer : MonoBehaviour
         {
             locked = false;
             gravity = -25f;
+            dust.Stop();
             //self.hitbox:rotate(math.rad(-90))
             //self.hitbox:scale(0.5)
-            //kickRecoil();
         }
     }
 
-    void kickRecoil()
+    void kickRecoil() //call this when player collides with an enemy or obstacle
     {
         if (locked)
         {
-            //dy = -200;
             _velocity.x = _velocity.x * -0.2f;
             gravity = -25f;
         }
-        //bounceSound:play()
+        AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
     }
 
     public void flashPlayer()
@@ -346,6 +325,5 @@ public class controlPlayer : MonoBehaviour
         playerSpriteRenderer.material.shader = Shader.Find("PaintWhite");
         yield return new WaitForSeconds(0.15f);
         playerSpriteRenderer.material.shader = Shader.Find("Sprites/Default");
-     }
-
+    }
 }

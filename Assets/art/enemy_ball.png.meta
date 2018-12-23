@@ -1,9 +1,11 @@
 fileFormatVersion: 2
-guid: 6d7278882d41bc1418fe1128216989ca
+guid: 0d4188bf7e235b8449ef5b6c8ca15b0b
 TextureImporter:
   fileIDToRecycleName:
-    21300000: bullet_pilot_0
-    21300002: bullet_pilot_1
+    21300000: enemy_ball_0
+    21300002: enemy_ball_1
+    21300004: enemy_ball_2
+    21300006: enemy_ball_3
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -86,13 +88,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bullet_pilot_0
+      name: enemy_ball_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 16
-        height: 16
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -100,19 +102,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5a391aefff77d546a241c1239bbf9b1
+      spriteID: 1a0d39306f95903489014c21ef648a26
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bullet_pilot_1
+      name: enemy_ball_1
       rect:
         serializedVersion: 2
-        x: 16
+        x: 64
         y: 0
-        width: 16
-        height: 16
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -120,7 +122,47 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9b473f257ef64474d8e849277da520a9
+      spriteID: 4ca9e337e9594194f823436fbabb1b85
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: enemy_ball_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9291ace562e89a540941621729583483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: enemy_ball_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f744655d5ea1cf34d806985d0f168a3f
       vertices: []
       indices: 
       edges: []
@@ -128,7 +170,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 25ca082b33946ef4db54e3441fd10e27
+    spriteID: 6ab7e7bd22c15f5409b4e1b8613b123f
     vertices: []
     indices: 
     edges: []

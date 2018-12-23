@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\scripts\afterImage.cs" />
+     <Compile Include="Assets\scripts\ballEnemy.cs" />
      <Compile Include="Assets\scripts\bullet.cs" />
      <Compile Include="Assets\scripts\CamShake.cs" />
      <Compile Include="Assets\scripts\controlPlayer.cs" />

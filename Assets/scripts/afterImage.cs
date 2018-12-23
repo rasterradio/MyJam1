@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class afterImage : MonoBehaviour {
-	float timer = 0.2f;
+	float timer = 0.1f; //trail length
     public SpriteRenderer[] sprites;
 
     void Start()
@@ -16,8 +16,6 @@ public class afterImage : MonoBehaviour {
             trailPartRenderer.sortingLayerID = sprite.sortingLayerID;
             trailPart.transform.position = sprite.transform.position;
             trailPart.transform.localScale = sprite.transform.lossyScale;
-            Destroy(trailPart, 0.5f); // replace 0.5f with needed lifeTime
-
         }
         transform.position = controlPlayer.Instance.transform.position;
 		transform.localScale = controlPlayer.Instance.transform.localScale;
@@ -26,7 +24,7 @@ public class afterImage : MonoBehaviour {
 	void Update()
 	{
 		timer -= Time.deltaTime;
-
+        
 		if (timer <= 0)
 			Destroy (gameObject);
 	}
