@@ -42,9 +42,8 @@ public class controlPlayer : MonoBehaviour
     private RaycastHit2D _lastControllerColliderHit;
     public Vector3 _velocity;
     public Animator anim;
-    SpriteRenderer playerSpriteRenderer;
     facing myFacing = facing.Right;
-
+	private playerFlash playerFlash;
 
     private static controlPlayer instance;
     public static controlPlayer Instance
@@ -60,7 +59,6 @@ public class controlPlayer : MonoBehaviour
     void Awake()
     {
         _controller = GetComponent<CharacterController2D>();
-        playerSpriteRenderer = GetComponent<SpriteRenderer>();
         dust = GetComponentInChildren<ParticleSystem>();
         dust.Stop();
 
@@ -68,6 +66,9 @@ public class controlPlayer : MonoBehaviour
         _controller.onControllerCollidedEvent += onControllerCollider;
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
+		
+		//flashPlayer = FindObjectOfType<playerFlash>();
+		playerFlash = GameObject.FindGameObjectWithTag("Player").GetComponent<playerFlash>();
     }
 
     #region Event Listeners
@@ -190,7 +191,7 @@ public class controlPlayer : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
             {
                 AudioSource.PlayClipAtPoint(dashSound, Camera.main.transform.position);
-                flashPlayer();
+                playerFlash.flash();
                 dust.Play();
                 if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
@@ -313,17 +314,5 @@ public class controlPlayer : MonoBehaviour
             gravity = -25f;
         }
         AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
-    }
-
-    public void flashPlayer()
-    {
-        StartCoroutine("showHitFlash");
-    }
-
-    IEnumerator showHitFlash()
-    {        
-        playerSpriteRenderer.material.shader = Shader.Find("PaintWhite");
-        yield return new WaitForSeconds(0.15f);
-        playerSpriteRenderer.material.shader = Shader.Find("Sprites/Default");
     }
 }
