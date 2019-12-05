@@ -43,7 +43,8 @@ public class controlPlayer : MonoBehaviour
     public Vector3 _velocity;
     public Animator anim;
     facing myFacing = facing.Right;
-	private playerFlash playerFlash;
+	
+	//PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
     private static controlPlayer instance;
     public static controlPlayer Instance
@@ -66,9 +67,6 @@ public class controlPlayer : MonoBehaviour
         _controller.onControllerCollidedEvent += onControllerCollider;
         _controller.onTriggerEnterEvent += onTriggerEnterEvent;
         _controller.onTriggerExitEvent += onTriggerExitEvent;
-		
-		//flashPlayer = FindObjectOfType<playerFlash>();
-		playerFlash = GameObject.FindGameObjectWithTag("Player").GetComponent<playerFlash>();
     }
 
     #region Event Listeners
@@ -182,7 +180,7 @@ public class controlPlayer : MonoBehaviour
             if (locked)
                 return;
 
-            // we can only jump whilst grounded
+            // we can only jump while grounded
             if (_controller.isGrounded && Input.GetKeyDown(KeyCode.Z))
             {
                 AudioSource.PlayClipAtPoint(jumpSound, Camera.main.transform.position);
@@ -191,9 +189,9 @@ public class controlPlayer : MonoBehaviour
             else if (Input.GetKeyDown(KeyCode.C) && dashCharge > 50)
             {
                 AudioSource.PlayClipAtPoint(dashSound, Camera.main.transform.position);
-                playerFlash.flash();
+                //playerFlash.flash();
                 dust.Play();
-                if (Camera.main.GetComponent<CamShake>() != null)//when camera shakes, disable smoothCamera
+                if (Camera.main.GetComponent<CamShake>() != null)
                     Camera.main.GetComponent<CamShake>().Shake(0.05f, 0.1f);
                 dash();
             }
